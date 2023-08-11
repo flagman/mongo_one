@@ -1,0 +1,58 @@
+require:
+  - rubocop-performance
+  - rubocop-thread_safety
+  - rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 3.2
+  NewCops: enable
+
+Layout/LineLength:
+  Max: 150
+  Exclude:
+    - config/environments/*
+    - lib/**/tasks/**/*
+    - db/**/*
+    - system/boot/**/*
+
+Metrics/MethodLength:
+  Max: 30
+  Exclude:
+    - db/**/*
+    - config/initializers/**/*
+    - system/boot/**/*
+
+Metrics/BlockLength:
+  Max: 30
+  Exclude:
+    - bin/scripts/**/*
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/SingleLineMethods:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: false
+
+Style/TrailingCommaInHashLiteral:
+  Enabled: false
+
+Style/TrailingCommaInArrayLiteral:
+  Enabled: false
+
+Naming/BlockForwarding:
+  EnforcedStyle: explicit
