@@ -1,6 +1,6 @@
 # mongo_one
 
-## 0.2.0 Updates 
+## 0.2 Updates 
 - Removed `auto_map` - auto maps by default.
 - `map_to` doesn't execute query anymore, it just sets mapping class and returns the query.
 - Added new methods that execute query: `one`, `one!` and `all`. `one!` raises `MongoOne::Errors:NotFound` if no document found.
