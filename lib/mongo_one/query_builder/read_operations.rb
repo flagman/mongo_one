@@ -1,7 +1,7 @@
 module MongoOne
   module QueryBuilder
     module ReadOperations
-      attr_accessor :aggregation_pipeline, :projection_disabled
+      attr_accessor :aggregation_pipeline, :projection_disabled, :map_class
 
       def find(query = {}, options = {})
         filter.merge!(query)
@@ -11,10 +11,6 @@ module MongoOne
 
       def count
         collection.count(filter)
-      end
-
-      def auto_map
-        map_to(@klass::Struct)
       end
 
       def sort(sort_options)
@@ -29,8 +25,25 @@ module MongoOne
 
       def map_to(klass)
         apply_projection_if_enabled(klass)
-        result = mongo_query
-        result.map { |doc| klass.new(doc) }
+        self.map_class = klass
+        self
+      end
+
+      def one!
+        one.tap do |result|
+          raise Errors::NotFoundError, "Document not found" if result.nil?
+        end
+      end
+
+      def one
+        result = mongo_query.first
+        return nil if result.nil?
+
+        _map_class.new(result)
+      end
+
+      def all
+        mongo_query.map { |doc| _map_class.new(doc) }
       end
 
       def aggregate(pipeline, options = {})
@@ -50,6 +63,10 @@ module MongoOne
       end
 
       private
+
+      def _map_class
+        map_class || @klass::Struct
+      end
 
       def apply_projection_if_enabled(klass)
         return if projection_disabled

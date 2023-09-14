@@ -17,7 +17,7 @@ RSpec.describe "MongoOne integration" do
         attribute :age, Types::Integer.optional
         attribute :cars, Types::Array do
           attribute :model, Types::String
-          attribute :year, Types::Integer
+          attribute? :year, Types::Integer  # tolarance to missing attribute
         end
         attribute :traits, Types::Hash do
           attribute :age, Types::Integer
@@ -34,9 +34,19 @@ RSpec.describe "MongoOne integration" do
     # tested_class = user_collection
     user_collection.insert_one(name: 'John',
                                age: nil,
-                               cars: [{ model: 'Tesla', year: 2018 }, { model: 'BMW', year: 2015 }],
+                               cars: [{ model: 'Tesla' }, { model: 'BMW', year: 2015 }],
                                traits: { age: 30, height: 180, book: { title: 'The Martian' } })
-    user = user_collection.find(name: 'John').limit(1).auto_map.first
+    user = user_collection.find(name: 'John').limit(1).one
+    expect(user.name).to eq('John')
+  end
+
+  it "can be used via instance methods" do
+    uc = user_collection.new
+    uc.insert_one(name: 'John',
+                  age: nil,
+                  cars: [{ model: 'Tesla', year: 2018 }, { model: 'BMW', year: 2015 }],
+                  traits: { age: 30, height: 180, book: { title: 'The Martian' } })
+    user = uc.find(name: 'John').limit(1).one
     expect(user.name).to eq('John')
   end
 end

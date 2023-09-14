@@ -1,6 +1,7 @@
 class Comment < Dry::Struct
   attribute :body, Types::String
   attribute :author, Types::String
+  attribute :metadata, Types::Hash
 end
 
 class Post < Dry::Struct
@@ -11,7 +12,8 @@ class Post < Dry::Struct
 end
 
 class User < Dry::Struct
-  attribute :name, Types::Strict::String
+  attribute :_id, Types::Any
+  attribute? :name, Types::Strict::String
   attribute :age, Types::Strict::Integer
   attribute :posts, Types::Array.of(Post)
 end
@@ -21,7 +23,7 @@ class UserProjectionCollection
   schema :users do
     attribute :traits, Types::Hash do
       attribute :age, Types::Integer
-      attribute :height, Types::Integer
+      attribute? :height, Types::Integer
       attribute :book, Types::Hash do
         attribute :title, Types::String.optional
       end
@@ -36,13 +38,15 @@ describe MongoOne::ProjectionBuilder do
 
       it 'returns the correct projection' do
         expected_projection = {
+          '_id' => 1,
           'name' => 1,
           'age' => 1,
           'posts.title' => 1,
           'posts.body' => 1,
           'posts.tags' => 1,
           'posts.comments.body' => 1,
-          'posts.comments.author' => 1
+          'posts.comments.author' => 1,
+          'posts.comments.metadata' => 1
         }
 
         expect(user_projection_builder.fields).to eq(expected_projection)
@@ -58,18 +62,20 @@ describe MongoOne::ProjectionBuilder do
           'body' => 1,
           'tags' => 1,
           'comments.body' => 1,
-          'comments.author' => 1
+          'comments.author' => 1,
+          'comments.metadata' => 1
         }
 
         expect(post_projection_builder.fields).to eq(expected_projection)
       end
     end
 
-    context 'when is class is MongoOne auto_struct' do
+    context 'when the class is MongoOne auto_struct' do
       let(:user_collection_projection_builder) { described_class.new(UserProjectionCollection::Struct) }
 
       it 'returns the correct projection for MongoOne auto_struct' do
         expected_projection = {
+          '_id' => 1,
           'traits.age' => 1,
           'traits.height' => 1,
           'traits.book.title' => 1
