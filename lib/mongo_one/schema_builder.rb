@@ -10,6 +10,13 @@ module MongoOne
       @indexes = []
       @plugins = {}
       @parent_builder = parent_builder
+      return unless parent_builder.nil?
+
+      attribute(:_id, Types::Any)
+    end
+
+    def attribute?(name, type, &block)
+      attribute("#{name}?".to_sym, type, &block)
     end
 
     def attribute(name, type, &block)

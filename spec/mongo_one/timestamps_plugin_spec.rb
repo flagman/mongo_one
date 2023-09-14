@@ -25,7 +25,7 @@ RSpec.describe MongoOne::TimestampsPlugin do
   describe 'Timestamps on record creation' do
     it 'assigns created_at and updated_at timestamps' do
       dummy_class.insert_one(name: 'John')
-      john = dummy_class.find(name: 'John').limit(1).auto_map.first
+      john = dummy_class.find(name: 'John').limit(1).one
       expect(john.created_at).not_to be_nil
       expect(john.updated_at).not_to be_nil
     end
@@ -34,9 +34,9 @@ RSpec.describe MongoOne::TimestampsPlugin do
   describe 'Timestamps on record update' do
     it 'updates the updated_at timestamp' do
       dummy_class.insert_one(name: 'John')
-      john = dummy_class.find(name: 'John').limit(1).auto_map.first
+      john = dummy_class.find(name: 'John').limit(1).one
       dummy_class.update_one({ name: 'John' }, { '$set': { name: 'John Doe' } })
-      john_doe = dummy_class.find(name: 'John Doe').limit(1).auto_map.first
+      john_doe = dummy_class.find(name: 'John Doe').limit(1).one
       expect(john.updated_at).not_to eq(john_doe.updated_at)
     end
   end

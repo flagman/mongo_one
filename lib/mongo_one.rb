@@ -2,6 +2,7 @@ module MongoOne
   INCLUDED_IN = []
   def self.included(base)
     base.extend(ClassMethods)
+    base.include(InstanceMethods)
     included_in(base)
   end
 
@@ -24,6 +25,7 @@ require 'dry-struct'
 require 'mongo'
 require 'mongo_one/version'
 require 'mongo_one/class_methods'
+require 'mongo_one/instance_methods'
 require 'mongo_one/db'
 require 'mongo_one/query_builder/base'
 require 'mongo_one/query_builder/read_operations'
@@ -36,6 +38,7 @@ require 'mongo_one/plugins_builder'
 require 'mongo_one/plugin'
 require 'mongo_one/plugins/timestamps_plugin'
 require 'mongo_one/types'
+require 'mongo_one/errors'
 require 'mongo_one/index_builder'
 require 'mongo_one/projection_builder'
 require 'mongo_one/ast/parser'

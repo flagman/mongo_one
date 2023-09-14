@@ -23,6 +23,16 @@ RSpec.describe MongoOne::SchemaBuilder do
     end
   end
 
+  describe '#attribute?' do
+    let(:dummy_class) { Class.new }
+    let(:schema_builder) { described_class.new(dummy_class) }
+
+    it 'defines an attribute with given name and ? as symbol' do
+      schema_builder.attribute?(:name, Types::String)
+      expect(schema_builder.attributes).to include(name?: { type: Types::String })
+    end
+  end
+
   describe '#indexes' do
     let(:dummy_class) do
       Class.new do

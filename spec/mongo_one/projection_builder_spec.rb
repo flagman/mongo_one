@@ -11,7 +11,8 @@ class Post < Dry::Struct
 end
 
 class User < Dry::Struct
-  attribute :name, Types::Strict::String
+  attribute :_id, Types::Any
+  attribute? :name, Types::Strict::String
   attribute :age, Types::Strict::Integer
   attribute :posts, Types::Array.of(Post)
 end
@@ -21,7 +22,7 @@ class UserProjectionCollection
   schema :users do
     attribute :traits, Types::Hash do
       attribute :age, Types::Integer
-      attribute :height, Types::Integer
+      attribute? :height, Types::Integer
       attribute :book, Types::Hash do
         attribute :title, Types::String.optional
       end
@@ -36,6 +37,7 @@ describe MongoOne::ProjectionBuilder do
 
       it 'returns the correct projection' do
         expected_projection = {
+          '_id' => 1,
           'name' => 1,
           'age' => 1,
           'posts.title' => 1,
@@ -65,11 +67,12 @@ describe MongoOne::ProjectionBuilder do
       end
     end
 
-    context 'when is class is MongoOne auto_struct' do
+    context 'when the class is MongoOne auto_struct' do
       let(:user_collection_projection_builder) { described_class.new(UserProjectionCollection::Struct) }
 
       it 'returns the correct projection for MongoOne auto_struct' do
         expected_projection = {
+          '_id' => 1,
           'traits.age' => 1,
           'traits.height' => 1,
           'traits.book.title' => 1

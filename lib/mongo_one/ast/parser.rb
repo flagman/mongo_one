@@ -18,11 +18,21 @@ module MongoOne
         node[0].map { |n| visit(n, name_prefix) }
       end
 
+      def detect_type_without_predicate(rest)
+        return Types::Any if rest[0] == :any
+
+        raise "Unknown type #{rest[0]}"
+      end
+
       def visit_key(node, name_prefix = nil)
         name, _, rest = node
         predicate_node = rest[1][1]
         target_name = name_prefix ? "#{name_prefix}.#{name}" : name
-        type = visit(predicate_node, name)
+        type = if predicate_node.nil?
+                 detect_type_without_predicate(rest)
+               else
+                 visit(predicate_node, name)
+               end
         if type == Array
           nested_target = rest[1][0][1][0][1][1] # skip to Array constructor
           if nested_target[0] == :predicate # Array of strings for example
