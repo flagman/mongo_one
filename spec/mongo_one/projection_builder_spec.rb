@@ -1,6 +1,7 @@
 class Comment < Dry::Struct
   attribute :body, Types::String
   attribute :author, Types::String
+  attribute :metadata, Types::Hash
 end
 
 class Post < Dry::Struct
@@ -44,7 +45,8 @@ describe MongoOne::ProjectionBuilder do
           'posts.body' => 1,
           'posts.tags' => 1,
           'posts.comments.body' => 1,
-          'posts.comments.author' => 1
+          'posts.comments.author' => 1,
+          'posts.comments.metadata' => 1
         }
 
         expect(user_projection_builder.fields).to eq(expected_projection)
@@ -60,7 +62,8 @@ describe MongoOne::ProjectionBuilder do
           'body' => 1,
           'tags' => 1,
           'comments.body' => 1,
-          'comments.author' => 1
+          'comments.author' => 1,
+          'comments.metadata' => 1
         }
 
         expect(post_projection_builder.fields).to eq(expected_projection)

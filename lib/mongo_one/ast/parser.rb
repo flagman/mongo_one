@@ -18,6 +18,14 @@ module MongoOne
         node[0].map { |n| visit(n, name_prefix) }
       end
 
+      def visit_hash(node, name_prefix = nil)
+        if node == [{}, {}]
+          Types::Hash
+        else
+          node[0].map { |n| visit(n, name_prefix) }
+        end
+      end
+
       def detect_type_without_predicate(rest)
         return Types::Any if rest[0] == :any
 
@@ -43,7 +51,11 @@ module MongoOne
           end
         elsif type == Hash
           nested_target = rest[1][0] # skip to Hash constructor
-          visit(nested_target, target_name)
+          if nested_target[1] == [{}, {}] # empty hash
+            { key: target_name, type: Hash }
+          else
+            visit(nested_target, target_name)
+          end
         else
           { key: target_name, type: }
         end
