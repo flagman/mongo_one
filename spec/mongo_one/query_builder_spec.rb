@@ -33,6 +33,16 @@ RSpec.describe "MongoOne::QueryBuilder" do
       user_collection.insert_one(name: 'Alice', age: 25)
       expect { user_collection.find(name: 'Bob').one! }.to raise_error(MongoOne::Errors::NotFoundError)
     end
+
+    context "when skip is used" do
+      it "skips the given number of documents" do
+        user_collection.insert_one(name: 'Alice', age: 25)
+        user_collection.insert_one(name: 'Bob', age: 30)
+        user_collection.insert_one(name: 'Charlie', age: 35)
+        users = user_collection.find.skip(1).all
+        expect(users.count).to eq(2)
+      end
+    end
   end
 
   describe "#aggregate" do

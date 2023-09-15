@@ -8,3 +8,5 @@
 - AST Support for Types::Any. Use `Types::Any` for `_id` in your Dry::Structs if you want to get `_id` as `BSON::ObjectId`. 
 - Auto Mapped struct now has `_id` as `Types::Any` by default.
 - Added missing keys toleration in `schema`. Use `attribute?` if the field in the db document is optional.
+- Added support for projections of untyped `Hash` and `Array` fields.
+- Added `skip` for read operations.
