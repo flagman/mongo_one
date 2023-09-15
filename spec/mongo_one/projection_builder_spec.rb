@@ -47,7 +47,8 @@ describe MongoOne::ProjectionBuilder do
           'posts.tags' => 1,
           'posts.comments.body' => 1,
           'posts.comments.author' => 1,
-          'posts.comments.metadata' => 1
+          'posts.comments.metadata' => 1,
+          'posts.comments.notes' => 1
         }
 
         expect(user_projection_builder.fields).to eq(expected_projection)
@@ -64,7 +65,8 @@ describe MongoOne::ProjectionBuilder do
           'tags' => 1,
           'comments.body' => 1,
           'comments.author' => 1,
-          'comments.metadata' => 1
+          'comments.metadata' => 1,
+          'comments.notes' => 1
         }
 
         expect(post_projection_builder.fields).to eq(expected_projection)

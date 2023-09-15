@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mongo_one (0.2.1)
+    mongo_one (0.2.2)
       dry-schema (~> 1.13, >= 1.13.2)
       dry-struct (~> 1.6)
       dry-types (~> 1.7, >= 1.7.1)
