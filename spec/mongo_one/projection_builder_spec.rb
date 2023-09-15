@@ -2,6 +2,7 @@ class Comment < Dry::Struct
   attribute :body, Types::String
   attribute :author, Types::String
   attribute :metadata, Types::Hash
+  attribute :notes, Types::Array
 end
 
 class Post < Dry::Struct
