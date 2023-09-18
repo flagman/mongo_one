@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = "mongo_one"
-  spec.version = "0.2.3"
+  spec.version = "0.2.4"
   spec.authors       = ["Pavel Malai"]
   spec.email         = ["flagmansupport@gmail.com"]
   spec.summary       = "A simple MongoDB ORM"

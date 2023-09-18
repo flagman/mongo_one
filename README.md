@@ -10,3 +10,4 @@
 - Added missing keys toleration in `schema`. Use `attribute?` if the field in the db document is optional.
 - Added support for projections of untyped `Hash` and `Array` fields.
 - Added `skip` for read operations.
+- Added `each_batch` helper for read operations. See [Spec](./spec/mongo_one/query_builder_spec.rb) for usage.
