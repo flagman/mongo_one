@@ -44,7 +44,6 @@ module MongoOne
           current_fetch_size = [0, fetch_size, total_limit - total_fetched].max
           return [] if current_fetch_size.zero?
 
-          puts "current_fetch_size: #{current_fetch_size}"
           build_subquery(total_fetched + pre_skip, current_fetch_size).all
         end
 

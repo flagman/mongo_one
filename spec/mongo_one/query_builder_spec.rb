@@ -138,6 +138,12 @@ RSpec.describe "MongoOne::QueryBuilder" do
       user_collection.insert_many(users)
     end
 
+    it 'returns an enumerator' do
+      expect(user_collection.find.each_batch(100)).to be_a(Enumerator)
+      first_batch = user_collection.find.each_batch(100).first
+      expect(first_batch).to be_a(Array)
+    end
+
     context 'without extra parameters' do
       it 'iterates over all documents in batches' do
         batches = user_collection.find.each_batch(100).to_a
