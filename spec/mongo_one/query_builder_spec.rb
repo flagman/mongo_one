@@ -155,7 +155,7 @@ RSpec.describe "MongoOne::QueryBuilder" do
 
     context 'with batch size equal to 1' do
       it 'yields documents one by one not batches' do
-        users = user_collection.find.each_batch(1).to_a
+        users = user_collection.find.each_batch(200, batch_size: 1).to_a
         expect(users.size).to eq(200)
         expect(users.first.age).to eq(0)
       end

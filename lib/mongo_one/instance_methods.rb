@@ -31,5 +31,9 @@ module MongoOne
     def delete_many(*)
       self.class.delete_many(*)
     end
+
+    def collection
+      self.class.collection
+    end
   end
 end
