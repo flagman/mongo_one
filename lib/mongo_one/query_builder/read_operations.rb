@@ -13,6 +13,11 @@ module MongoOne
         collection.count(filter)
       end
 
+      def skip(number)
+        options[:skip] = number
+        self
+      end
+
       def sort(sort_options)
         options[:sort] = sort_options
         self

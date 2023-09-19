@@ -43,7 +43,9 @@ module MongoOne
                end
         if type == Array
           nested_target = rest[1][0][1][0][1][1] # skip to Array constructor
-          if nested_target[0] == :predicate # Array of strings for example
+          if !nested_target
+            { key: target_name, type: }
+          elsif nested_target[0] == :predicate # Array of strings for example
             type = visit(nested_target, target_name)
             { key: target_name, type: Array, of: type }
           else

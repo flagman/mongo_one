@@ -5,6 +5,7 @@ module MongoOne
       include QueryBuilder::WriteOperations
       include QueryBuilder::DeleteOperations
       include QueryBuilder::OptionsChain
+      include QueryBuilder::Helpers::Batches
     end
   end
 end

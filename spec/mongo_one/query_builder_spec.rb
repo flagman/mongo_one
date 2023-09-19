@@ -33,6 +33,16 @@ RSpec.describe "MongoOne::QueryBuilder" do
       user_collection.insert_one(name: 'Alice', age: 25)
       expect { user_collection.find(name: 'Bob').one! }.to raise_error(MongoOne::Errors::NotFoundError)
     end
+
+    context "when skip is used" do
+      it "skips the given number of documents" do
+        user_collection.insert_one(name: 'Alice', age: 25)
+        user_collection.insert_one(name: 'Bob', age: 30)
+        user_collection.insert_one(name: 'Charlie', age: 35)
+        users = user_collection.find.skip(1).all
+        expect(users.count).to eq(2)
+      end
+    end
   end
 
   describe "#aggregate" do
@@ -118,6 +128,57 @@ RSpec.describe "MongoOne::QueryBuilder" do
       users = user_collection.find(age: 35).all
 
       expect(users.count).to eq(0)
+    end
+  end
+
+  describe '#each_batch' do
+    before do
+      # Let's centralize user generation for consistent and easy-to-change data
+      users = Array.new(200) { |i| { name: 'Alice', age: i } }
+      user_collection.insert_many(users)
+    end
+
+    it 'returns an enumerator' do
+      expect(user_collection.find.each_batch(100)).to be_a(Enumerator)
+      first_batch = user_collection.find.each_batch(100).first
+      expect(first_batch).to be_a(Array)
+    end
+
+    context 'without extra parameters' do
+      it 'iterates over all documents in batches' do
+        batches = user_collection.find.each_batch(100).to_a
+        expect(batches.size).to eq(2)
+        expect(batches.first.size).to eq(100)
+        expect(batches.last.size).to eq(100)
+      end
+    end
+
+    context 'with batch size equal to 1' do
+      it 'yields documents one by one not batches' do
+        users = user_collection.find.each_batch(200, batch_size: 1).to_a
+        expect(users.size).to eq(200)
+        expect(users.first.age).to eq(0)
+      end
+    end
+
+    context 'with batch size parameter' do
+      it 'iterates using the specified batch size' do
+        batches = user_collection.find.each_batch(100, batch_size: 9).to_a
+        expected_batches_count = (200 / 9.0).ceil
+
+        expect(batches.flatten.size).to eq(200)
+        expect(batches.size).to eq(expected_batches_count)
+      end
+    end
+
+    context 'with limit, skip, and batch size parameters' do
+      it 'applies all parameters correctly' do
+        batches = user_collection.find.skip(50).limit(150).each_batch(100, batch_size: 10).to_a
+
+        expect(batches.flatten.size).to eq(150)
+        expect(batches.size).to eq(15)
+        expect(batches.first.first[:age]).to eq(50)
+      end
     end
   end
 end
